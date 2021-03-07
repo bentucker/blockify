@@ -438,11 +438,13 @@ class Blockify(object):
             sink_infos = [pattern.findall(sink) for sink in spotify_sink_list]
             # Every third element per sublist is a key, the value is the preceding
             # two elements in the form of a tuple - {pid : (index, playback_status, muted_value)}
-            idxd = {sink_status[3]: (sink_status[0], sink_status[1], sink_status[2]) for sink_status in sink_infos if
+            idxd = {int(sink_status[3]): (sink_status[0], sink_status[1],
+                                      sink_status[2]) for sink_status in sink_infos if
                     4 == len(sink_status)}
 
-            pid = [k for k in idxd.keys() if k in self.spotify_pids][0]
-            sink_status = idxd[pid]
+            pid = [k for k in idxd.keys() if len(self.spotify_pids) > k]
+            if pid:
+                sink_status = idxd[pid[0]]
 
         return sink_status
 
